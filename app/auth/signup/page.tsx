@@ -9,17 +9,21 @@ import { RadioGroup, RadioGroupItem } from "@/app/components/ui/radio-group";
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/app/components/ui/select";
 import { useState } from "react";
 import { Eye, EyeOff, X } from "lucide-react";
+import { useRouter } from "next/navigation"; // Added for redirection
 
 export default function Home() {
+    const router = useRouter(); // Initialize router for redirection
     const [step, setStep] = useState(1);
     const [showPassword, setShowPassword] = useState(false);
+    const [userId, setUserId] = useState<number | null>(null);
     const [formData, setFormData] = useState({
         name: "",
         email: "",
         password: "",
         gender: "male",
         weight: "",
-        height: "",
+        height_feet: "",
+        height_inches: "",
         age: "",
         activityLevel: "",
         dietaryPreference: "",
@@ -55,9 +59,10 @@ export default function Home() {
             </Badge>
         ));
     };
+
     const handleSignup = async () => {
         if (!formData.name || !formData.email || !formData.password) {
-            alert("Please fill out all fields.");
+            alert("Please fill out all required fields.");
             return;
         }
 
@@ -74,9 +79,8 @@ export default function Home() {
             method: "POST",
             headers: myHeaders,
             body: raw,
-            redirect: "follow" as RequestRedirect // ✅ Correct type
+            redirect: "follow" as RequestRedirect
         };
-
 
         try {
             const response = await fetch("https://friskaaiapi.azurewebsites.net/signup", requestOptions);
@@ -85,6 +89,10 @@ export default function Home() {
             console.log("Signup API response:", result);
 
             if (response.ok) {
+                // Save the user ID from the response
+                if (result.UserID) {
+                    setUserId(result.UserID);
+                }
                 setStep(2);
             } else {
                 alert(result.message || "Signup failed. Try again.");
@@ -93,10 +101,103 @@ export default function Home() {
             console.error("Signup error:", error);
             alert("An error occurred. Please try again.");
         }
-        setStep(2) ;
     };
 
-  
+    const handleHealthProfileSubmit = async () => {
+        // Validate required fields
+        if (!formData.weight || !formData.age || !formData.activityLevel || !formData.dietaryPreference) {
+            alert("Please fill out all required fields.");
+            return;
+        }
+
+        // Parse numeric values
+        const weight = parseFloat(formData.weight);
+        const height_feet = parseInt(formData.height_feet || "0");
+        const height_inches = parseInt(formData.height_inches || "0");
+        const age = parseInt(formData.age);
+
+        // Calculate BMI (simplified)
+        const heightInMeters = ((height_feet * 12) + height_inches) * 0.0254;
+        const bmi = heightInMeters > 0 ? weight / (heightInMeters * heightInMeters) : 0;
+
+        // Calculate TDEE (simplified - just an example)
+        // This should be replaced with a proper TDEE calculation
+        const baseTDEE = 2000; // Base value
+        let activityMultiplier = 1.2; // Sedentary
+
+        if (formData.activityLevel === "lightly-active") {
+            activityMultiplier = 1.375;
+        } else if (formData.activityLevel === "moderately-active") {
+            activityMultiplier = 1.55;
+        } else if (formData.activityLevel === "very-active") {
+            activityMultiplier = 1.725;
+        }
+
+        const tdee = baseTDEE * activityMultiplier;
+
+        const myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/json");
+
+        // Convert array data to strings
+        const dietaryRestrictions = formData.dietaryRestrictions.length > 0
+            ? formData.dietaryRestrictions.join(", ")
+            : "None";
+
+        const digestiveIssues = formData.digestiveIssues.length > 0
+            ? formData.digestiveIssues.join(", ")
+            : "None";
+
+        const foodAllergies = formData.foodAllergies.length > 0
+            ? formData.foodAllergies.join(", ")
+            : "None";
+
+        const aggravatingFoods = formData.foodsAggravating.length > 0
+            ? formData.foodsAggravating.join(", ")
+            : "None";
+
+        const raw = JSON.stringify({
+            "UserID": userId,
+            "Gender": formData.gender.charAt(0).toUpperCase() + formData.gender.slice(1), // Capitalize first letter
+            "Weight": weight,
+            "Height_inches": height_inches,
+            "Height_feet": height_feet,
+            "Age": age,
+            "Activity_Level": formData.activityLevel.charAt(0).toUpperCase() + formData.activityLevel.slice(1).replace(/-/g, ' '), // Format activity level
+            "Dietary_Preference": formData.dietaryPreference.charAt(0).toUpperCase() + formData.dietaryPreference.slice(1),
+            "Dietary_Restrictions": dietaryRestrictions,
+            "Digestive_Issues": digestiveIssues,
+            "Food_Allergies": foodAllergies,
+            "Aggravating_Foods": aggravatingFoods,
+            "BMI": parseFloat(bmi.toFixed(1)),
+            "TDEE": Math.round(tdee),
+            "username": formData.name
+        });
+
+        const requestOptions = {
+            method: "POST",
+            headers: myHeaders,
+            body: raw,
+            redirect: "follow" as RequestRedirect
+        };
+
+        try {
+            const response = await fetch("https://friskaaiapi.azurewebsites.net/dietinfocreate", requestOptions);
+            const result = await response.text();
+
+            console.log("Health Profile API response:", result);
+
+            if (response.ok) {
+                alert("Profile created successfully!");
+                // Redirect to chat page on successful submission
+                router.push("/chat");
+            } else {
+                alert("Failed to create health profile. Please try again.");
+            }
+        } catch (error) {
+            console.error("Health profile submission error:", error);
+            alert("An error occurred. Please try again.");
+        }
+    };
 
     return (
         <div className="min-h-screen bg-gradient-to-b text-black from-purple-50 to-yellow-50 flex items-center justify-center p-4">
@@ -189,7 +290,7 @@ export default function Home() {
 
                         <Button
                             className="w-full bg-purple-500 hover:bg-purple-600 text-white"
-                            onClick={() =>  handleSignup()}
+                            onClick={handleSignup}
                         >
                             Next
                         </Button>
@@ -228,10 +329,10 @@ export default function Home() {
                             {/* Grid Layout for Input Fields */}
                             <div className="grid grid-cols-2 gap-6">
                                 <div className="space-y-4">
-                                    <Label>Weight</Label>
+                                    <Label>Weight (kg)</Label>
                                     <Input
                                         type="text"
-                                        placeholder="60 lbs"
+                                        placeholder="60"
                                         value={formData.weight}
                                         onChange={(e) => handleInputChange("weight", e.target.value)}
                                     />
@@ -239,12 +340,24 @@ export default function Home() {
 
                                 <div className="space-y-4">
                                     <Label>Height</Label>
-                                    <Input
-                                        type="text"
-                                        placeholder="5 ft, 11 in"
-                                        value={formData.height}
-                                        onChange={(e) => handleInputChange("height", e.target.value)}
-                                    />
+                                    <div className="grid grid-cols-2 gap-2">
+                                        <div>
+                                            <Input
+                                                type="text"
+                                                placeholder="5 ft"
+                                                value={formData.height_feet}
+                                                onChange={(e) => handleInputChange("height_feet", e.target.value)}
+                                            />
+                                        </div>
+                                        <div>
+                                            <Input
+                                                type="text"
+                                                placeholder="11 in"
+                                                value={formData.height_inches}
+                                                onChange={(e) => handleInputChange("height_inches", e.target.value)}
+                                            />
+                                        </div>
+                                    </div>
                                 </div>
 
                                 <div className="space-y-4">
@@ -346,18 +459,34 @@ export default function Home() {
                                 </div>
                             </div>
 
+                            {/* Foods that Aggravate */}
+                            <div className="space-y-4">
+                                <Label>Foods That Aggravate</Label>
+                                <div className="flex flex-wrap gap-2">{renderBadges(formData.foodsAggravating, "foodsAggravating")}</div>
+                                <Select onValueChange={(value) => handleArrayToggle("foodsAggravating", value)}>
+                                    <SelectTrigger>
+                                        <SelectValue placeholder="Select aggravating foods" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="spicy-food">Spicy Food</SelectItem>
+                                        <SelectItem value="fried-food">Fried Food</SelectItem>
+                                        <SelectItem value="acidic-food">Acidic Food</SelectItem>
+                                    </SelectContent>
+                                </Select>
+                            </div>
+
                             {/* Buttons */}
                             <div className="flex gap-6 mt-8">
-                                <Button variant="outline" className="flex-1 text-white" onClick={() => setStep(1)}>Back</Button>
+                                <Button variant="outline" className="flex-1" onClick={() => setStep(1)}>Back</Button>
                                 <Button
                                     className="flex-1 bg-purple-500 hover:bg-purple-600 text-white"
-                                    onClick={() => console.log("Form submitted:", formData)}
+                                    onClick={handleHealthProfileSubmit}
                                 >
                                     Save
-                                </Button>                            </div>
+                                </Button>
+                            </div>
                         </div>
                     </div>
-
                 )}
             </div>
         </div>
