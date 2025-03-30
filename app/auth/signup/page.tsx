@@ -10,6 +10,8 @@ import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@
 import { useState } from "react";
 import { Eye, EyeOff, X } from "lucide-react";
 import { useRouter } from "next/navigation"; // Added for redirection
+import toast from 'react-hot-toast';
+
 
 export default function Home() {
     const router = useRouter(); // Initialize router for redirection
@@ -62,7 +64,7 @@ export default function Home() {
 
     const handleSignup = async () => {
         if (!formData.name || !formData.email || !formData.password) {
-            alert("Please fill out all required fields.");
+            toast.error("Please fill out all required fields.");
             return;
         }
 
@@ -95,18 +97,18 @@ export default function Home() {
                 }
                 setStep(2);
             } else {
-                alert(result.message || "Signup failed. Try again.");
+             toast.error(result.message || "Signup failed. Try again.");
             }
         } catch (error) {
             console.error("Signup error:", error);
-            alert("An error occurred. Please try again.");
+            toast.error("An error occurred. Please try again.");
         }
     };
 
     const handleHealthProfileSubmit = async () => {
         // Validate required fields
         if (!formData.weight || !formData.age || !formData.activityLevel || !formData.dietaryPreference) {
-            alert("Please fill out all required fields.");
+            toast.error("Please fill out all required fields.");
             return;
         }
 
@@ -187,15 +189,15 @@ export default function Home() {
             console.log("Health Profile API response:", result);
 
             if (response.ok) {
-                alert("Profile created successfully!");
+                toast.success("Profile created successfully!");
                 // Redirect to chat page on successful submission
                 router.push("/chat");
             } else {
-                alert("Failed to create health profile. Please try again.");
+                toast.error("Failed to create health profile. Please try again.");
             }
         } catch (error) {
             console.error("Health profile submission error:", error);
-            alert("An error occurred. Please try again.");
+            toast.error("An error occurred. Please try again.");
         }
     };
 

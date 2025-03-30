@@ -1,6 +1,7 @@
 "use client"
 import React, { useState } from 'react';
 import { Mail, Lock, Eye, EyeOff } from 'lucide-react';
+import toast from 'react-hot-toast';
 
 type Step = 'email' | 'verify' | 'password';
 
@@ -25,7 +26,7 @@ function App() {
     const handlePasswordSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         // Handle password reset logic here
-        alert('Password reset successful!');
+        toast.success('Password reset successful!');
     };
 
     const handleCodeChange = (index: number, value: string) => {
