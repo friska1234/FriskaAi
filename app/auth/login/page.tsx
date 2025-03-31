@@ -9,7 +9,9 @@ import { loginUser } from '@/app/redux/authSlice';
 import { motion } from 'framer-motion';
 import { RootState } from '@/app/redux/store';
 import { API_URL } from '@/app/features/config';
-  
+import toast from 'react-hot-toast';
+import { setCookie } from "cookies-next";
+
 const initialValues = {
     email: '',
     password: '',
@@ -45,12 +47,16 @@ const LoginPage = () => {
             const data = await response.json();
             if (response.ok) {
                 localStorage.setItem('userData', JSON.stringify(data));
+                const userId = JSON.stringify(data.user.id);
+                setCookie("userId", userId, { maxAge: 60 * 60 * 24 });
+                window.location.href = "/chat";
                 dispatch(loginUser({ user: values.email, password: values.password }));
-                router.push('/chat');
+                window.localStorage.href('/chat');
             } else {
                 console.error('Login failed:', data.message);
             }
         } catch (error) {
+            toast.error(`Error during login`);
             console.error('Error during login:', error);
         }
     };
@@ -119,7 +125,7 @@ return (
 
                                     {/* Forgot Password Link */}
                                     <div className="text-right mb-4">
-                                        <Link href="/forgot-password" className="text-purple-700 hover:underline text-sm">
+                                        <Link href="/auth/forgot-password" className="text-purple-700 hover:underline text-sm">
                                             Forgot Password?
                                         </Link>
                                     </div>
@@ -137,7 +143,7 @@ return (
                                     {/* Sign-up Link */}
                                     <p className="text-sm mt-3 text-gray-600">
                                         Don't have an account?{" "}
-                                        <Link href="/signup" className="text-purple-700 hover:underline">
+                                        <Link href="/auth/signup" className="text-purple-700 hover:underline">
                                             Sign Up
                                         </Link>
                                     </p>

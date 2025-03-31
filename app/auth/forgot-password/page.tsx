@@ -8,37 +8,74 @@ type Step = 'email' | 'verify' | 'password';
 function App() {
     const [step, setStep] = useState<Step>('email');
     const [email, setEmail] = useState('');
-    const [verificationCode, setVerificationCode] = useState(['', '', '', '']);
+    const [verificationCode, setVerificationCode] = useState(['', '', '', '','' ,'']);
     const [showPassword, setShowPassword] = useState(false);
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
 
-    const handleEmailSubmit = (e: React.FormEvent) => {
+    const handleEmailSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        setStep('verify');
+        try {
+            const response = await fetch("https://friskaaiapi.azurewebsites.net/send-otp", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ email }),
+            });
+            const result = await response.text();
+            const a=JSON.parse(result);
+            console.log(a.otp);
+            localStorage.setItem('email', email);
+            localStorage.setItem('otp', a.otp);
+            toast.success("OTP sent successfully");
+            setStep('verify');
+        } catch (error) {
+            console.error(error);
+            toast.error("Failed to send OTP");
+        }
     };
-
     const handleVerificationSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        setStep('password');
+        const enteredOtp = verificationCode.join("");
+        const storedOtp = localStorage.getItem("otp");
+        if (enteredOtp === storedOtp) {
+            toast.success("OTP verified!");
+            setStep("password");
+        } else {
+            toast.error("Invalid OTP");
+        }
     };
 
-    const handlePasswordSubmit = (e: React.FormEvent) => {
+    const handlePasswordSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        // Handle password reset logic here
-        toast.success('Password reset successful!');
-    };
+        if (password !== confirmPassword) {
+            toast.error("Passwords do not match");
+            return;
+        }
+        try {
+            const email = localStorage.getItem("email");
+            const response = await fetch("https://friskaaiapi.azurewebsites.net/update-password", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ email, new_password: password })
+            });
+            await response.text();
+            toast.success("Password reset successful!");
+            window.location.href = "/auth/login";
+            localStorage.removeItem("email");
+            localStorage.removeItem("otp");
 
+        } catch (error) {
+            toast.error("Failed to reset password");
+            console.error(error);
+        }
+    };
     const handleCodeChange = (index: number, value: string) => {
         if (value.length <= 1) {
             const newCode = [...verificationCode];
             newCode[index] = value;
             setVerificationCode(newCode);
-
-            // Auto-focus next input
-            if (value && index < 3) {
-                const nextInput = document.getElementById(`code-${index + 1}`);
-                nextInput?.focus();
+            if (value && index < 5) {
+                document.getElementById(`code-${index + 1}`)?.focus();
             }
         }
     };
@@ -94,7 +131,7 @@ function App() {
                         <div className="text-center">
                             <h1 className="text-3xl font-bold text-gray-900">Verify Email</h1>
                             <p className="mt-2 text-gray-600">
-                                We have sent a 4-digit code to {email}, please provide us the code.
+                                We have sent a 6-digit code to {email}, please provide us the code.
                             </p>
                         </div>
 

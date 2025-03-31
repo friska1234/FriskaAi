@@ -191,7 +191,7 @@ export default function Home() {
             if (response.ok) {
                 toast.success("Profile created successfully!");
                 // Redirect to chat page on successful submission
-                router.push("/chat");
+                router.push("/auth/login");
             } else {
                 toast.error("Failed to create health profile. Please try again.");
             }
@@ -299,7 +299,7 @@ export default function Home() {
 
                         <p className="text-center text-sm text-gray-600">
                             Already have an account?{" "}
-                            <a href="#" className="text-purple-500 hover:underline">
+                            <a href="/auth/login" className="text-purple-500 hover:underline">
                                 Sign In
                             </a>
                         </p>
@@ -479,7 +479,7 @@ export default function Home() {
 
                             {/* Buttons */}
                             <div className="flex gap-6 mt-8">
-                                <Button variant="outline" className="flex-1" onClick={() => setStep(1)}>Back</Button>
+                                <Button variant="outline" className="flex-1  text-white" onClick={() => setStep(1)}>Back</Button>
                                 <Button
                                     className="flex-1 bg-purple-500 hover:bg-purple-600 text-white"
                                     onClick={handleHealthProfileSubmit}
