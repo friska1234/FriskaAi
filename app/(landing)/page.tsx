@@ -100,7 +100,9 @@ const Page = () => {
               <Link href="#partner" className="text-gray-700 hover:text-orange-500 transition-colors">Partner</Link>
             </div>
             <div className="flex items-center space-x-4">
-              <Button variant="ghost" className="hover:text-orange-500 transition-colors">Try NutriAi</Button>
+             <Link href="/auth/login">
+              <Button variant="ghost" className="hover:text-orange-500  transition-colors">Try NutriAi</Button>
+              </Link>
               <Button className="bg-gradient-to-r from-orange-400 to-purple-500 text-white shadow-md hover:shadow-lg transition-all">Contact Us</Button>
             </div>
           </div>
