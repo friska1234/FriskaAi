@@ -6,7 +6,7 @@ import { Button } from "../components/ui/button";
 import { JSX, ReactNode, useEffect } from "react";
 import AOS from 'aos';
 import 'aos/dist/aos.css';
-
+ 
 interface BeneficiaryCardProps {
   icon: JSX.Element;
   title: string;
@@ -16,17 +16,18 @@ interface BeneficiaryCardProps {
 
 const BeneficiaryCard = ({ icon, title, description, delay = 0 }: BeneficiaryCardProps) => {
   return (
-    <div 
-      data-aos="fade-up" 
+    <div
+      data-aos="fade-up"
       data-aos-delay={delay}
-      className="bg-gradient-to-br from-black to-gray-900 group hover:bg-gradient-to-br hover:from-white hover:to-gray-100 border-white/20 p-6 rounded-2xl shadow-lg border flex flex-col items-start space-y-4 transition-all duration-300 hover:scale-105 hover:shadow-xl"
+      className="bg-white border border-gray-200 p-6 rounded-lg shadow-md flex flex-col items-start space-y-4 transition-all duration-300 hover:shadow-lg hover:scale-105"
     >
-      <div className="p-3 bg-gradient-to-r from-orange-100 to-orange-200 text-orange-600 rounded-full shadow-md">{icon}</div>
-      <h4 className="text-lg font-semibold text-white group-hover:text-gray-800">{title}</h4>
-      <p className="text-sm text-white/80 group-hover:text-gray-800">{description}</p>
+      <div className="p-3 bg-gray-100 text-gray-700 rounded-full shadow-sm">{icon}</div>
+      <h4 className="text-lg font-semibold text-gray-900">{title}</h4>
+      <p className="text-sm text-gray-600">{description}</p>
     </div>
   );
 };
+
 
 interface StepCardProps {
   number: string;
@@ -37,14 +38,14 @@ interface StepCardProps {
 
 const StepCard = ({ number, title, description, delay = 0 }: StepCardProps) => {
   return (
-    <div 
-      data-aos="flip-left" 
+    <div
+      data-aos="flip-left"
       data-aos-delay={delay}
-      className="bg-gradient-to-br from-black to-gray-900 group hover:bg-gradient-to-br hover:from-white hover:to-gray-100 border-white/20 p-6 rounded-2xl shadow-lg border flex flex-col items-start space-y-4 transition-all duration-300 hover:scale-105 hover:shadow-xl"
+      className="bg-white border border-gray-200 p-6 rounded-lg shadow-md flex flex-col items-start space-y-4 transition-all duration-300 hover:shadow-lg hover:scale-105"
     >
-      <div className="text-xl font-bold bg-gradient-to-r from-orange-400 to-orange-600 bg-clip-text text-transparent group-hover:from-orange-600 group-hover:to-orange-800">{number}.</div>
-      <h4 className="text-lg font-semibold text-white group-hover:text-gray-800">{title}</h4>
-      <p className="text-sm text-white/80 group-hover:text-gray-800">{description}</p>
+      <div className="text-xl font-bold text-gray-900">{number}.</div>
+      <h4 className="text-lg font-semibold text-gray-900">{title}</h4>
+      <p className="text-sm text-gray-600">{description}</p>
     </div>
   );
 };
@@ -56,19 +57,21 @@ interface FeatureCardProps {
   delay?: number;
 }
 
+
 const FeatureCard = ({ icon, title, description, delay = 0 }: FeatureCardProps) => {
   return (
-    <div 
-      data-aos="zoom-in" 
+    <div
+      data-aos="zoom-in"
       data-aos-delay={delay}
-      className="bg-gradient-to-br from-black to-gray-900 group hover:bg-gradient-to-br hover:from-white hover:to-gray-100 border-white/20 p-6 rounded-2xl shadow-lg border flex flex-col items-start space-y-4 transition-all duration-300 hover:scale-105 hover:shadow-xl"
+      className="bg-white border border-gray-200 p-6 rounded-lg shadow-md flex flex-col items-start space-y-4 transition-all duration-300 hover:shadow-lg hover:scale-105"
     >
-      <div className="p-3 bg-gradient-to-r from-orange-100 to-orange-200 text-orange-600 rounded-full shadow-md">{icon}</div>
-      <h4 className="text-lg font-semibold text-white group-hover:text-gray-800">{title}</h4>
-      <p className="text-sm text-white/80 group-hover:text-gray-800">{description}</p>
+      <div className="p-3 bg-gray-100 text-gray-700 rounded-full shadow-sm">{icon}</div>
+      <h4 className="text-lg font-semibold text-gray-900">{title}</h4>
+      <p className="text-sm text-gray-600">{description}</p>
     </div>
   );
 };
+
 
 const Page = () => {
   useEffect(() => {
@@ -460,6 +463,8 @@ const TestimonialCard = ({ quote, author, delay = 0 }: { quote: string; author: 
   );
 };
 
+export default Page;
+
 const PartnershipCard = ({
   icon,
   title,
@@ -485,3 +490,4 @@ const PartnershipCard = ({
     </div>
   )
 }
+

@@ -87,7 +87,7 @@ function App() {
                     <form onSubmit={handleEmailSubmit} className="space-y-6">
                         <div className="text-center">
                             <h1 className="text-3xl font-bold text-gray-900">Forgot Password</h1>
-                            <p className="mt-2 text-gray-600">No worries, we'll send you the reset instruction</p>
+                            <p className="mt-2 text-gray-600">No worries, we will send you the reset instruction</p>
                         </div>
 
                         <div className="space-y-2">
@@ -157,7 +157,7 @@ function App() {
                         </button>
 
                         <div className="text-center">
-                            <span className="text-gray-600">Didn't receive the code? </span>
+                            <span className="text-gray-600">Did not receive the code? </span>
                             <a href="#" className="text-purple-600 hover:text-purple-700 font-medium">
                                 Resend
                             </a>

@@ -1,6 +1,6 @@
 "use client"
 
-import React, { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import React, {  useEffect, useRef, useState } from 'react'
 import { motion } from "framer-motion";
 import dayjs from "dayjs";
 import { setCookie } from 'cookies-next';
@@ -17,10 +17,8 @@ interface ProcessedChatLog {
     fullChat: string; // 🔹 Add this line
 }
 const page = () => {
-    const [inputValue, setInputValue] = useState<string>("");
-    const [messages, setMessages] = useState<{ text: string; sender: "user" | "system" }[]>([]);
-    const [showChat, setShowChat] = useState<boolean>(false);
-    const chatContainerRef = useRef<HTMLDivElement>(null);
+     const [messages, setMessages] = useState<{ text: string; sender: "user" | "system" }[]>([]);
+     const chatContainerRef = useRef<HTMLDivElement>(null);
     const [chatLogs, setChatLogs] = useState<{
         today: ProcessedChatLog[];
         yesterday: ProcessedChatLog[];
@@ -453,9 +451,9 @@ const page = () => {
 
 
 
-    const handleStartChat = () => {
-        setShowChat(true);
-    };
+    // const handleStartChat = () => {
+    //     setShowChat(true);
+    // };
  
     const handleNewChat = async () => {
         try {
@@ -660,9 +658,9 @@ const page = () => {
 
         setSelectedChat({ ...log });
     };
-    const handleInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-        setUserQuery(e.target.value);
-    }, []);
+    // const handleInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    //     setUserQuery(e.target.value);
+    // }, []);
 
 // console.log(selectedChat);
   return (

@@ -3,8 +3,7 @@ import { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Formik, Form, ErrorMessage, Field } from 'formik';
 import * as Yup from 'yup';
-import { useRouter } from 'next/navigation';
-import Link from 'next/link';
+ import Link from 'next/link';
 import { loginUser } from '@/app/redux/authSlice';
 import { motion } from 'framer-motion';
 import { RootState } from '@/app/redux/store';
@@ -24,8 +23,7 @@ const loginSchema = Yup.object({
 
 const LoginPage = () => {
     const dispatch = useDispatch();
-    const router = useRouter();
-    const authState = useSelector((state: RootState) => state.auth);
+     const authState = useSelector((state: RootState) => state.auth);
 
     const [showPassword, setShowPassword] = useState(false);
     const [loading, setLoading] = useState(true);
@@ -142,7 +140,7 @@ return (
 
                                     {/* Sign-up Link */}
                                     <p className="text-sm mt-3 text-gray-600">
-                                        Don't have an account?{" "}
+                                        Don not have an account?{" "}
                                         <Link href="/auth/signup" className="text-purple-700 hover:underline">
                                             Sign Up
                                         </Link>

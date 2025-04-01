@@ -1,9 +1,7 @@
-// lib/features/auth/authSlice.ts
-import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
  import { AuthState, LoginCredentials, LoginResponse } from "../types/authTypes";
 import { API_URL } from "../features/config"; 
-// Initial state - don't access localStorage during SSR
-const initialState: AuthState = {
+ const initialState: AuthState = {
   user: null,
   token: null,
   loading: false,
